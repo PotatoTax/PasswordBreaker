@@ -1,43 +1,100 @@
 import java.util.*;
 import java.util.Scanner;
 
+class Main
+{
+    public static void main(String[] args)
+    {
+        PasswordBreaker p = new PasswordBreaker();
+        p.main();
+    }
+}
+
 class PasswordBreaker
 {
-    public static void main ( String[] args )
+    private String alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+    void main()
     {
         Scanner scanner = new Scanner(System.in);
+        ArrayList<Long> times = new ArrayList<>();
+        long totalTime = 0;
+        String upperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String digits = "1234567890";
+        String symbols = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
-        //enter a password
-        // write method that brute force checks for match
-        // time how long it takes
-        //
-        // different methods - lowercase only, lowercase+uppercase, all ASCII
-
-        System.out.print("Enter 4 character password - only lowercase\t");
+        System.out.print("Enter password - only lowercase\t");
         String password = scanner.nextLine();
 
-        long started = new Date().getTime();
-        checkPassword(password);
-        long finished = new Date().getTime();
-        long time = started-finished;
-        System.out.println("It took " + time + " milliseconds to find your password");
+        System.out.println("Is password case sensitive? - y/n\t");
+        String response = scanner.nextLine();
+        if (response.equals("y"))
+        { alphabet = alphabet + upperAlphabet; }
+        else
+        { password = password.toLowerCase(); }
 
+        for (int i = 0; i < 10; i++)
+        {
+            if (password.contains(Integer.toString(i)))
+            {
+                alphabet = alphabet + digits;
+                break;
+            }
+        }
 
+        for (int i = 0; i < 32; i++)
+        {
+            if (password.contains(symbols.substring(i, i+1)))
+            {
+                alphabet = alphabet + symbols;
+                break;
+            }
+        }
+
+        System.out.println(alphabet);
+
+        for (int i = 0; i < 10; i++)
+        {
+            long started = new Date().getTime();
+            checkPassword(password);
+            long finished = new Date().getTime();
+            times.add(finished - started);
+            System.out.println("It took " + times.get(times.size() - 1) + " milliseconds to find your password");
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            totalTime += times.get(i);
+        }
+        System.out.println("It took " + totalTime + " milliseconds to break your password 10 times.");
+        System.out.println("Average time was " + totalTime / 10 + " milliseconds.");
     }
 
-    public static void checkPassword(String p)
+    private void checkPassword(String p)
     {
-
+        while (true)
+        {
+            String guess = generateRandomPassword(p.length());
+            if (guess.equals(p))
+            {
+                break;
+            }
+        }
     }
 
-    public static char generateRandomChar()
+    private char generateRandomChar()
     {
-        return 'c';
+        int r = new Random().nextInt(alphabet.length());
+        return alphabet.charAt(r);
     }
 
-    public static String generateRandomPassword(int l)
+    private String generateRandomPassword(int l)
     {
-        return "c";
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; i < l; i++)
+        {
+            b.append(generateRandomChar());
+        }
+        return b.toString();
     }
 
 
