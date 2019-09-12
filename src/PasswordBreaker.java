@@ -1,12 +1,14 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.Scanner;
 
 class Main
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
-        PasswordBreaker p = new PasswordBreaker();
-        p.main();
+        new PasswordBreaker();
     }
 }
 
@@ -14,8 +16,7 @@ class PasswordBreaker
 {
     private String alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-    void main()
-    {
+    PasswordBreaker() throws IOException {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Long> times = new ArrayList<>();
         long totalTime = 0;
@@ -28,6 +29,16 @@ class PasswordBreaker
 
         System.out.println("Is password case sensitive? - y/n\t");
         String response = scanner.nextLine();
+
+        List<String> passwords = Files.readAllLines(Paths.get("xato-net-10-million-passwords-1000000.txt"));
+        for (String p : passwords)
+        {
+            if (p.equals(password))
+            {
+                System.out.print("\nYour password is basic and boring and insecure . . .\n        Just like you.\n\n");
+                System.exit(1);
+            }
+        }
         if (response.equals("y"))
         { alphabet = alphabet + upperAlphabet; }
         else
@@ -96,6 +107,4 @@ class PasswordBreaker
         }
         return b.toString();
     }
-
-
 }
